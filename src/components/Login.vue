@@ -14,11 +14,11 @@
 import { ref } from 'vue';
 import { loginUser } from '../auth';  // Adjust the path as necessary
 import { useRouter } from 'vue-router';
-
+const router = useRouter();
 const email = ref('');
 const password = ref('');
 const error = ref('');
-const router = useRouter();
+
 
 const login = async () => {
   try {
