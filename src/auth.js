@@ -1,6 +1,6 @@
 // src/auth.js
 
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { app } from './firebaseConfig.js';
 
 const auth = getAuth(app);
@@ -29,3 +29,6 @@ export const onAuthStateChangedListener = (callback) => {
 export const logoutUser = () => {
   return signOut(auth);
 };
+
+// Export the auth instance
+export { auth };
