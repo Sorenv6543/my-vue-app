@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h2>Login</h2>
-    <form @submit.prevent="login">
+  <div id="reg">
+    <h1>Login</h1>
+    <form id="col" @submit.prevent="login">
       <input v-model="email" type="email" placeholder="Email" required />
       <input v-model="password" type="password" placeholder="Password" required />
       <button type="submit">Login</button>
@@ -31,5 +31,22 @@ const login = async () => {
 </script>
 
 <style>
-/* Add your styles here */
-</style>
+#reg{
+  display: flex;
+    /* margin-bottom: 28rem; */
+    /* display: block; */
+    /* border-block: initial; */
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 3rem;
+}
+#col>input{
+
+  padding: .6rem;
+  display: flex;
+  
+  
+}</style>

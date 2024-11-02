@@ -1,52 +1,29 @@
 vue
 <template>
   <div id="app">
-    <!-- Header with navigation links -->
-    <header>
-      <nav>
-        <div class="logo">
-          <h1>CleanBooking</h1>
-        </div>
-        <ul class="nav-links" :class="{ open: menuOpen, closed: !menuOpen }">
-          <li><router-link to="/">Login</router-link></li>
-          <li><router-link to="/login">Login</router-link></li>
-          <li><router-link to="/register">Register</router-link></li>
-          <li><router-link to="/dashboard">Dashboard</router-link></li>
-        </ul>
-        <!-- Hamburger Menu for mobile view -->
-        <div class="hamburger" @click="toggleMenu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </nav>
-    </header>
+    <Header id="header" />
 
     <!-- Main content area -->
     <router-view></router-view>
 
     <!-- Footer -->
     <footer>
-      <p>&copy; 2024 My Vue App</p>
+      <p>&copy; 2024 copywrite</p>
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import Header from "../src/components/Header.vue";
 
-const menuOpen = ref(false);
-
-// Function to toggle mobile menu
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value;
-};
 </script>
+
+
 
 <style scoped>
 /* Global styles */
 #app {
-  max-width: 1200px;
+  max-width: 1800px;
   font-family: "Arial", sans-serif;
   color: #2c3e50;
   text-align: center;
@@ -55,17 +32,17 @@ const toggleMenu = () => {
 /* Header and Navigation */
 header {
   background-color: #003366;
-  padding: 1rem 0;
+  padding: .1rem 0;
   position: relative;
 }
 
 nav {
-  display: flex;
+  
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 10px;
 }
 
 .logo h1 {
@@ -127,10 +104,10 @@ nav {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 1768px) {
   .nav-links {
-    position: absolute;
-    top: 60px;
+    position: relative;
+    top: 30px;
     left: 0;
     width: 100%;
     background-color: #003366;

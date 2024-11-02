@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h2>Register</h2>
-    <form @submit.prevent="register">
+  <div id="reg">
+    <h1>Register</h1>
+    <form id="col" @submit.prevent="register">
       <input v-model="email" type="email" placeholder="Email" required />
       <input v-model="password" type="password" placeholder="Password" required />
       <input v-model="fullName" type="text" placeholder="FullName" required />
@@ -30,23 +30,13 @@ const register = async () => {
     const userCredential = await registerUser(email.value, password.value);
     const userId = userCredential.user.uid;
 
-    // Generate a unique calendar ID
-    const calendarId = `cal_${userId}_${Date.now()}`;
-
     // Create user document in Firestore
     await setDoc(doc(db, 'users', userId), {
       fullName: fullName.value,
       email: email.value,
-      calendarId: calendarId,
-      houses: []
+      houses: [],
+      id: userId
     });
-
-    // Create a calendar document
-    await setDoc(doc(db, 'calendars', calendarId), {
-      userId: userId,
-      events: []
-    });
-
     router.push('/dashboard');
   } catch (err) {
     error.value = err.message;
@@ -55,5 +45,24 @@ const register = async () => {
 </script>
 
 <style>
+#reg{
+  display: flex;
+    /* margin-bottom: 28rem; */
+    /* display: block; */
+    /* border-block: initial; */
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 3rem;
+}
+#col>input{
+
+  padding: .6rem;
+  display: flex;
+  
+  
+}
 /* Add your styles here */
 </style>
