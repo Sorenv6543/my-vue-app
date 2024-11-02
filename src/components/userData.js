@@ -4,7 +4,7 @@ import { onAuthStateChangedListener, logoutUser, auth } from '../auth';
 import { doc, onSnapshot, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
-export function useUserData() {
+export function userData() {
   const userData = ref(null);
   const error = ref(null);
 

@@ -7,6 +7,9 @@
       <button type="submit">Login</button>
       <p v-if="error">{{ error }}</p>
     </form>
+    
+    <p>Or Register <router-link to="/register">Here </router-link>
+    </p>
   </div>
 </template>
 
@@ -23,7 +26,7 @@ const error = ref('');
 const login = async () => {
   try {
     await loginUser(email.value, password.value);
-    router.push('/dashboard');  // Redirect to dashboard
+    router.push('/home');  // Redirect to dashboard
   } catch (err) {
     error.value = err.message;
   }

@@ -1,20 +1,23 @@
 vue
 <template>
   <div id="app">
-    <Header id="header" />
+    
+  
 
     <!-- Main content area -->
     <router-view></router-view>
 
     <!-- Footer -->
-    <footer>
+    <!-- <footer>
       <p>&copy; 2024 copywrite</p>
-    </footer>
+    </footer> -->
   </div>
 </template>
 
 <script setup>
 import Header from "../src/components/Header.vue";
+
+
 
 </script>
 

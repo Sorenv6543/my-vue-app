@@ -29,9 +29,6 @@ export const onAuthStateChangedListener = (callback) => {
 export const logoutUser = () => {
   return signOut(auth);
 };
-// //signout function  
-// export const lUser = () => {
-//   return signOutUser(auth);
-// };
+
 // Export the auth instance
 export { auth };

@@ -1,3 +1,23 @@
+<!-- HTML -->
+<template>
+  <div class='demo-app'>
+    <div class='demo-app-main'>
+      <FullCalendar
+        class='demo-app-calendar'
+        :options='calendarOptions'
+      >
+        <template v-slot:eventContent='arg'>
+          <b>{{ arg.timeText }}</b>
+          <i>{{ arg.event.title }}</i>
+        </template>
+      </FullCalendar>
+    </div>
+  </div>
+</template>
+
+
+
+<!-- JAVASCRIPT -->
 <script>
 import { defineComponent } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
@@ -14,6 +34,10 @@ export default defineComponent({
   components: {
     FullCalendar,
   },
+  props:{
+  userId: String,
+  activeHouse: Object 
+},
   data() {
     return {
       calendarOptions: {
@@ -109,28 +133,18 @@ export default defineComponent({
     handleEvents(events) {
       this.currentEvents = events
     },
-  },
-  beforeUnmount() {
+    beforeUnmount() {
     // Clean up any Firestore listeners if you have any
-  }
+  },
+},
+
+
+
+
 })
 </script>
 
-<template>
-  <div class='demo-app'>
-    <div class='demo-app-main'>
-      <FullCalendar
-        class='demo-app-calendar'
-        :options='calendarOptions'
-      >
-        <template v-slot:eventContent='arg'>
-          <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
-        </template>
-      </FullCalendar>
-    </div>
-  </div>
-</template>
+
 
 <style lang='css'>
 

@@ -5,7 +5,8 @@
       <input v-model="email" type="email" placeholder="Email" required />
       <input v-model="password" type="password" placeholder="Password" required />
       <input v-model="fullName" type="text" placeholder="FullName" required />
-      <button type="submit">Register</button>
+      <button type="submit">Register</button>    <p>Or Login <router-link to="/login">Here </router-link></p>
+
       <p v-if="error">{{ error }}</p>
     </form>
   </div>
@@ -37,7 +38,7 @@ const register = async () => {
       houses: [],
       id: userId
     });
-    router.push('/dashboard');
+    router.push('/home');
   } catch (err) {
     error.value = err.message;
   }
