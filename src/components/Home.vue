@@ -6,7 +6,7 @@
         
      
       <p v-if="userData">
-        <!-- <UserDashboard :user="userData" :is-loading="isLoading" :error="error" /> -->
+        <UserDashboard :user="userData" :is-loading="isLoading" :error="error" />
         <FullCalendar :id="calendarId" :user-id="userData.id" />
         <AddHouseForm @add-house="addHouse" :is-submitting="isSubmitting" :error-message="errorMessage" />
         <HouseList :houses="userData.houses" :activeHouse="activeHouse" @setActiveHouse="activeHouse" />
@@ -32,7 +32,7 @@ import FullCalendar from './FullCalendar.vue';
 import AddHouseForm from './AddHouseForm.vue';
 import HouseList from './HouseList.vue';
 import UserInfo from './UserInfo.vue';
-// import UserDashboard from './UserDashboard.vue';
+import UserDashboard from './UserDashboard.vue';
 
 const router = useRouter();
 
