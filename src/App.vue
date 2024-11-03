@@ -15,7 +15,7 @@ vue
 </template>
 
 <script setup>
-import Header from "../src/components/Header.vue";
+
 
 
 

@@ -46,7 +46,7 @@ const addHouse = async () => {
   isSubmitting.value = true;
   errorMessage.value = '';
 
-const house = newHouseName.value ;
+  const house = { name: newHouseName.value.trim() };
   try {
     if (user && user.id) {
       await updateDoc(doc(db, 'users', user.id), {
