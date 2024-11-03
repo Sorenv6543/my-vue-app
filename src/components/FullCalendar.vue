@@ -34,10 +34,7 @@ export default defineComponent({
   components: {
     FullCalendar,
   },
-  props:{
-  userId: String,
-  activeHouse: Object 
-},
+
   data() {
     return {
       calendarOptions: {
@@ -193,6 +190,37 @@ b {
 .fc { /* the calendar root */
   max-width: 1100px;
   margin: 0 auto;
-}
+  --fc-button-active-bg-color: #60a2df;
+  background-color: #eaf9fc;
 
+}
+.fc .fc-button-primary {
+    background-color: #66b8ca;
+    /* border-color: var(--fc-button-border-color); */
+    color: var(--fc-button-text-color);
+}
+.fc .fc-button {
+    background-color:#5e91c1;
+    border: 1px solid transparent;
+    border-radius: 0.25em;
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 0.4em 0.65em;
+    text-align: center;
+    user-select: none;
+    vertical-align: middle;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1.5em;
+    background-color: #5e91c1;
+    color: #eaf9fc;
+}
+.fc .fc-button-primary:disabled {
+    background-color: var(--fc-button-active-bg-color);
+    border-color: var(--fc-button-border-color);
+    color: var(--fc-button-text-color);
+    
+}
 </style>

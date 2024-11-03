@@ -28,13 +28,13 @@ import Header from "../src/components/Header.vue";
 #app {
   max-width: 1800px;
   font-family: "Arial", sans-serif;
-  color: #2c3e50;
+  color: #7197bd;
   text-align: center;
 }
 
 /* Header and Navigation */
 header {
-  background-color: #003366;
+  background-color: #cdd8e3;
   padding: .1rem 0;
   position: relative;
 }
@@ -113,7 +113,7 @@ nav {
     top: 30px;
     left: 0;
     width: 100%;
-    background-color: #003366;
+    background-color: #c7cbcf;
     padding: 10px 0;
     flex-direction: column;
     align-items: center;

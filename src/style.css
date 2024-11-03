@@ -11,6 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0px;
 }
 
 a {
@@ -24,6 +25,8 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0px;
+  box-sizing: border-box;
   
   
   min-width: 320px;
@@ -61,14 +64,25 @@ button:focus-visible {
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0.5rem;
+  padding: 0.0rem;
   text-align: center;
 }
-
+#houseBtn{
+  background-color: #8cb3d3;
+  color: rgb(255, 255, 255)!important;
+  outline: 4px auto white !important;
+  outline-offset: -2px;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  padding: .5rem 1rem;
+  font-size: 1rem;
+  margin-left: -4rem;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #4e4c4c;
+    background-color: #fafafa;
+    padding: 0px;
   }
   a:hover {
     color: #747bff;
@@ -76,4 +90,6 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+ 
+  }
+

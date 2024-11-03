@@ -1,12 +1,13 @@
 <template>
   <div id="addnewhouseForm">
-        <h3>Add a New House</h3>
+        <h4>Add Your Houses to Book Cleanings</h4>
         <div v-if="isLoading">Loading...</div>
   <div v-else-if="error">Error: {{ error }}</div>
   <div v-else>
     <form @submit.prevent="addHouse">
       <input type="text" v-model="newHouseName" placeholder="House Name">
-      <button type="submit" :disabled="isSubmitting">Add House</button>
+      <br>
+      <button id="houseBtn" type="submit" :disabled="isSubmitting">Add House</button>
       <div v-if="errorMessage">{{ errorMessage }}</div>
     </form>
        </div>
@@ -17,10 +18,19 @@
 import { ref } from 'vue';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebaseConfig'; // Adjust the import path as needed
-import { userData } from './userData'; // Adjust the import path as needed
+// import { userData } from './userData'; // Adjust the import path as needed
 
-const { userData: userDataRef, error: userDataError } = userData(); // Use userData function
+import { defineProps} from 'vue';
 
+const props = defineProps({
+  user: {
+    type: Object,
+    required: true
+  }
+});
+
+
+const user = props.user;
 const newHouseName = ref('');
 const isSubmitting = ref(false);
 const errorMessage = ref('');
@@ -36,10 +46,10 @@ const addHouse = async () => {
   isSubmitting.value = true;
   errorMessage.value = '';
 
-  const house = { name: newHouseName.value };
+const house = newHouseName.value ;
   try {
-    if (userDataRef.value && userDataRef.value.id) {
-      await updateDoc(doc(db, 'users', userDataRef.value.id), {
+    if (user && user.id) {
+      await updateDoc(doc(db, 'users', user.id), {
         houses: arrayUnion(house)
       });
       newHouseName.value = '';
@@ -55,3 +65,18 @@ const addHouse = async () => {
 };
 
 </script>
+
+<style scoped>
+
+#addnewhouseForm {
+  display: flex;
+  justify-content: flex-start;
+    flex-direction: column;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    align-items: baseline;
+  margin: 0 auto;
+  
+}
+
+</style>

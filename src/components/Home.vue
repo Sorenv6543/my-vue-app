@@ -1,16 +1,16 @@
 <template>
     <div>
-      <h2>Home</h2>
+      
       <p v-if="!userData">Please log in to see your dashboard.</p>
       
         
      
       <p v-if="userData">
-        <UserDashboard :user="userData" :is-loading="isLoading" :error="error" />
-        <FullCalendar :id="calendarId" :user-id="userData.id" />
-        <AddHouseForm @add-house="addHouse" :is-submitting="isSubmitting" :error-message="errorMessage" />
+        <UserDashboard :user="userData" :is-loading="isLoading" :error="error" @logout="logout" />
+        <AddHouseForm :user="userData"  :is-submitting="isSubmitting" :error-message="errorMessage" />
         <HouseList :houses="userData.houses" :activeHouse="activeHouse" @setActiveHouse="activeHouse" />
-        <UserInfo :user="userData" @logout="logout" />
+        <FullCalendar :user-id="userData.id" />
+        
       </p>
       <template v-else>
         <p>Please log in to see your dashboard.</p>
@@ -24,14 +24,13 @@
   <!-- JAVASCRIPT -->
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref, onMounted, onUnmounted, reactive, toRefs } from 'vue';
+import { onMounted, onUnmounted, reactive, toRefs } from 'vue';
 import { onAuthStateChangedListener, logoutUser, auth } from '../auth';
-import { doc, updateDoc, arrayUnion, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import FullCalendar from './FullCalendar.vue';
 import AddHouseForm from './AddHouseForm.vue';
 import HouseList from './HouseList.vue';
-import UserInfo from './UserInfo.vue';
 import UserDashboard from './UserDashboard.vue';
 
 const router = useRouter();
@@ -43,7 +42,7 @@ const state = reactive({
   error: null,
   isSubmitting: false,
   errorMessage: '',
-  activeHouse: null
+  
 });
 
 const { userData, isLoading, error, isSubmitting, errorMessage, activeHouse } = toRefs(state);
