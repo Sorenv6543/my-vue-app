@@ -8,8 +8,8 @@
         :class="{ active: house === selectedHouse }" 
         @click="selectHouse(house)"
       >
-        {{ house.name }}
-         <!-- Delete button -->
+        <span class="house-name">{{ house.name }}</span>
+      <button class="edit-button" @click.stop="editHouse(house)">Edit</button>
          <span class="delete-button" @click.stop="confirmDelete(house)">✖</span>
       </li>
     </ul>
@@ -21,38 +21,40 @@ import { defineProps, defineEmits, ref, watch } from 'vue';
 
 const props = defineProps({
   houses: {
-    type: Object,
+    type: Array,
     required: true,
   },
   activeHouse: {
     type: Object,
-    default: () => ({}),
+    default: null,
   },
 });
 
-const emit = defineEmits(['setActiveHouse', 'deleteHouse']); // Add deleteHouse to emit events
+const emit = defineEmits(['setActiveHouse', 'deleteHouse', 'editHouse']);
 
-// Use the entire object for comparison
 const selectedHouse = ref(props.activeHouse);
 
 const selectHouse = (house) => {
-  selectedHouse.value = house; // Set selectedHouse to the entire house object
-  emit('setActiveHouse', house); // Emit the full house object to parent
+  selectedHouse.value = house;
+  emit('setActiveHouse', house);
 };
 
-// Confirm deletion before emitting the event to the parent
 const confirmDelete = (house) => {
   if (confirm(`Are you sure you want to delete ${house.name}?`)) {
-    emit('deleteHouse', house); // Emit the delete event with the house object
+    emit('deleteHouse', house);
   }
 };
-// Sync selectedHouse with any changes to activeHouse prop
+
+const editHouse = (house) => {
+  emit('editHouse', house);
+};
+
 watch(
   () => props.activeHouse,
   (newActiveHouse) => {
     selectedHouse.value = newActiveHouse;
   },
-  { immediate: true } // Trigger the watcher immediately on mount
+  { immediate: true }
 );
 </script>
 
@@ -73,5 +75,19 @@ watch(
 .house-list li.active {
   background-color: #36b5f4;
   color: white;
+}
+
+.delete-button {
+  margin-left: 10px;
+  color: #ff6b6b;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  color: #ff3333;
+}
+
+.edit-button {
+  margin-left: 10px;
 }
 </style>
