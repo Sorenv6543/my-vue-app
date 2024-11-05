@@ -1,0 +1,60 @@
+plantum
+@startuml jj
+title Home.vue with AddHouseForm.vue, FullCalendar.vue, and Firebase Integration
+
+class User
+class Router
+class Home {
+  + userData: State
+  + isLoading: State
+  + error: State
+  + isSubmitting: State
+  + errorMessage: State
+  + activeHouse: State
+  + isEditModalVisible: State
+  + selectedHouse: State
+  + fetchUserDataHandler(currentUser)
+  + logout()
+}
+
+class UserDashboard {
+  + props: {user, isLoading, error}
+}
+
+class AddHouseForm {
+  + props: {user}
+  + events: {houseAdded}
+}
+
+class HouseModal {
+  + props: {house, user, userId, isEdit, isVisible}
+  + events: {closeModal, houseAdded, houseUpdated}
+}
+
+class HouseList {
+  + props: {houses, activeHouse}
+  + events: {setActiveHouse, deleteHouse, editHouse}
+}
+
+class FullCalendar {
+  + props: {userId, activeHouse}
+  + events: {addEvent, editEvent, deleteEvent}
+}
+
+class FirebaseAuth
+class FirebaseStore
+
+User --> Router : "requests /login or /dashboard"
+Router --> Home
+Home --> FirebaseAuth : "authenticates"
+Home --> UserDashboard : "renders"
+Home --> AddHouseForm : "renders"
+Home --> HouseList : "renders"
+Home --> FullCalendar : "renders"
+AddHouseForm --> HouseModal : "opens"
+HouseModal --> AddHouseForm : "emits events"
+FullCalendar --> FirebaseStore : "CRUD operations"
+HouseList --> Home : "emits events"
+Home --> FirebaseStore : "manages data"
+
+@enduml

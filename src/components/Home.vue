@@ -11,13 +11,14 @@
         :error="error" 
         @logout="logout" 
       />
-      <AddHouseForm 
+
+      <AddHouseButton 
         :user="userData"
+        :user-id="userData.id"
         :is-submitting="isSubmitting" 
         :error-message="errorMessage"
-       
       />
-      <!-- @openModal="openHouseModal" addhouseForm -->
+      <!-- @openModal="openHouseModal" AddHouseButton -->
       <HouseModal 
         v-if="isEditModalVisible"
         :house="selectedHouse"
@@ -35,29 +36,30 @@
         @deleteHouse="deleteHouseHandler"
         @editHouse="openEditModal" 
       />
+
       <FullCalendar 
         :user-id="userData.id" 
         :active-house="activeHouse" 
       />
       </template>
 
-    <!-- Error message display -->
+    <!-- Error Display -->
       <p v-if="error" class="error">{{ error }}</p>
     </div>
   </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-import { onMounted, onUnmounted, reactive, toRefs, ref } from 'vue';
-import { onAuthStateChangedListener, logoutUser } from '../auth';
-import { fetchUserData, deleteHouse } from './user-utils';
-import FullCalendar from './FullCalendar.vue';
-import AddHouseForm from './AddHouseForm.vue';
-import HouseList from './HouseList.vue';
-import UserDashboard from './UserDashboard.vue';
-import HouseModal from './HouseModal.vue';
+import { useRouter } from 'vue-router'
+import { onMounted, onUnmounted, reactive, toRefs, ref } from 'vue'
+import { onAuthStateChangedListener, logoutUser } from '../auth'
+import { fetchUserData, deleteHouse } from './user-utils'
+import FullCalendar from './FullCalendar.vue'
+import AddHouseButton from './AddHouseButton.vue'
+import HouseList from './HouseList.vue'
+import UserDashboard from './UserDashboard.vue'
+import HouseModal from './HouseModal.vue'
 
-const router = useRouter();
+const router = useRouter()
 
 // Reactive state
 const state = reactive({
@@ -67,7 +69,8 @@ const state = reactive({
   isSubmitting: false,
   errorMessage: '',
   activeHouse: {}, 
-});
+  
+})
 
 // Destructure state for easier access
 const { userData, isLoading, error, isSubmitting, errorMessage, activeHouse } = toRefs(state);
@@ -78,71 +81,69 @@ const selectedHouse = ref({});
 
 // Modal control functions
 const openEditModal = (house) => {
-  selectedHouse.value = { ...house };
-  isEditModalVisible.value = true;
-};
+  selectedHouse.value = { ...house }
+  isEditModalVisible.value = true
+}
 
 const closeEditModal = () => {
-  isEditModalVisible.value = false;
-  selectedHouse.value = {};
-};
+  isEditModalVisible.value = false
+  selectedHouse.value = {}
+}
 
-// House update handler
+// House management functions
 const handleHouseUpdated = (updatedHouse) => {
-  const houseIndex = state.userData.houses.findIndex(h => h.houseId === updatedHouse.houseId);
+  const houseIndex = state.userData.houses.findIndex(h => h.houseId === updatedHouse.houseId)
   if (houseIndex !== -1) {
     state.userData.houses[houseIndex] = updatedHouse;
   }
-};
+}
 
-// Set active house
 const setActiveHouse = (house) => {
   if (typeof house === 'object') {
-    state.activeHouse = house;
+    state.activeHouse = house
   } else {
-    console.warn("Expected an object for activeHouse, received:", house);
+    console.warn("Expected an object for activeHouse, received:", house)
   }
-};
+}
 
-// House deletion handler
 const deleteHouseHandler = async (house) => {
-  await deleteHouse(house, state.userData, state);
-};
+  await deleteHouse(house, state.userData, state)
+}
 
-// User data fetching
+// User data management
 const fetchUserDataHandler = async (currentUser) => {
-  state.unsubscribeUser = fetchUserData(currentUser, state);
-};
+  state.unsubscribeUser = fetchUserData(currentUser, state)
+}
+
+// Authentication functions
+const logout = async () => {
+  try {
+    await logoutUser()
+    state.userData = null
+    router.push('/login')
+  } catch (err) {
+    state.error = 'Failed to logout. Please try again.'
+  }
+}
 
 // Lifecycle hooks
 onMounted(() => {
   state.unsubscribeAuth = onAuthStateChangedListener(async (currentUser) => {
-    state.isLoading = true;
-    state.error = null;
+    state.isLoading = true
+    state.error = null
     if (currentUser) {
-      await fetchUserDataHandler(currentUser);
+      await fetchUserDataHandler(currentUser)
     } else {
-      state.userData = null;
-      state.isLoading = false;
+      state.userData = null
+      state.isLoading = false
     }
-  });
-});
+  })
+})
 
 onUnmounted(() => {
-  if (state.unsubscribeAuth) state.unsubscribeAuth();
-  if (state.unsubscribeUser) state.unsubscribeUser();
-});
-
-// Logout function
-const logout = async () => {
-  try {
-    await logoutUser();
-    state.userData = null;
-    router.push('/login');
-  } catch (err) {
-    state.error = 'Failed to logout. Please try again.';
-  }
-};
+  if (state.unsubscribeAuth) state.unsubscribeAuth()
+  if (state.unsubscribeUser) state.unsubscribeUser()
+})
 </script>
 
 <style scoped>

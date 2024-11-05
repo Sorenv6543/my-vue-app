@@ -2,7 +2,7 @@
 <div class="user-info">
     
     <p><strong>Houses:</strong> {{ user.houses.length }}</p>
-    <p><strong> Welcome {{ user.fullName }}</strong></p>
+    <p id='username'><strong> {{ user.fullName }}</strong> Logged In</p>
     <button @click="logout">Logout</button>
   </div>
 </template>
@@ -40,7 +40,9 @@ const logout = () => {
   color: white;
 }
 
-
+#username{
+  margin-right: -70px;
+}
 
 
 button {

@@ -15,16 +15,19 @@
     "@fullcalendar/timegrid": "^6.1.10",
     "@fullcalendar/vue3": "^6.1.10",
     "@vueuse/core": "^11.1.0",
+    "bootstrap": "^5.3.3",
     "dot": "^1.1.3",
     "dotenv": "^16.4.5",
     "env": "^0.0.2",
     "firebase": "^10.14.1",
     "uuid": "^11.0.2",
     "vue": "^3.5.10",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "yuml-diagram": "^1.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
+    "sass": "^1.80.6",
     "vite": "^5.4.8",
     "vite-plugin-vue-devtools": "^7.5.4"
   }
