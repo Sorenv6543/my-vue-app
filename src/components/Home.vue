@@ -42,7 +42,7 @@
         :active-house="activeHouse" 
       />
       </template>
-
+      <p><router-link to="/Primevue">PrimeView Examples</router-link></p>
     <!-- Error Display -->
       <p v-if="error" class="error">{{ error }}</p>
     </div>

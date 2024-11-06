@@ -1,33 +1,18 @@
-vue
 <template>
   <div id="app">
-    
-  
-
     <!-- Main content area -->
     <router-view></router-view>
-
-    <!-- Footer -->
-    <!-- <footer>
-      <p>&copy; 2024 copywrite</p>
-    </footer> -->
   </div>
 </template>
 
 <script setup>
-
-
-
-
 </script>
-
-
 
 <style scoped>
 /* Global styles */
 #app {
   max-width: 1800px;
-  font-family: "Arial", sans-serif;
+  font-family: Arial, sans-serif;
   color: #7197bd;
   text-align: center;
 }
@@ -35,12 +20,12 @@ vue
 /* Header and Navigation */
 header {
   background-color: #cdd8e3;
-  padding: .1rem 0;
+  padding: 0.1rem 0;
   position: relative;
 }
 
 nav {
-  
+  display: flex;
   justify-content: space-between;
   align-items: center;
   max-width: 1500px;
@@ -49,7 +34,7 @@ nav {
 }
 
 .logo h1 {
-  color: white;
+  color: #ffffff;
   font-size: 1.5rem;
 }
 
@@ -67,7 +52,7 @@ nav {
 }
 
 .nav-links a {
-  color: white;
+  color: #ffffff;
   text-decoration: none;
   font-size: 1.2rem;
 }
@@ -90,7 +75,7 @@ nav {
 .hamburger span {
   width: 25px;
   height: 3px;
-  background-color: white;
+  background-color: #ffffff;
   margin: 3px 0;
 }
 

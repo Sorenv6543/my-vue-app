@@ -8,9 +8,10 @@
       <p v-if="error">{{ error }}</p>
     </form>
     
-    <p>Or Register <router-link to="/register">Here </router-link>
-    </p>
+    <p>Or Register <router-link to="/register">Here </router-link></p>
   </div>
+  
+  
 </template>
 
 <script setup>
