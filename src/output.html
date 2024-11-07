@@ -1,0 +1,16 @@
+<h1>My Component Diagram</h1>
+<p>This is a class diagram for my Vue components:</p>
+<pre><code class="language-plantuml">@startuml
+class ParentComponent {
+    +propA: String
+    +methodX(): void
+}
+
+class ChildComponent {
+    +propC: Number
+    +methodY(): void
+}
+
+ParentComponent *-- ChildComponent
+@enduml
+</code></pre>
