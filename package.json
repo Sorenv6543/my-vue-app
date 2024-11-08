@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@eslint/config-array": "^0.19.0",
-    "@fullcalendar/core": "^6.1.10",
-    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.10",
-    "@fullcalendar/timegrid": "^6.1.10",
-    "@fullcalendar/vue3": "^6.1.10",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@fullcalendar/vue3": "^6.1.15",
     "@popperjs/core": "^2.11.8",
     "@vue/compiler-sfc": "^3.5.12",
     "@vueuse/core": "^11.1.0",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
+    "@vuensight/cli": "^0.1.5",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.28.0",
     "sass": "^1.80.6",

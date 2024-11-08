@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { defineProps, onBeforeUnmount,ref } from 'vue';
+import { onBeforeUnmount,ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';

@@ -10,7 +10,7 @@
       >
         <span class="house-name">{{ house.name }}</span>
         <button class="edit-button" @click.stop="editHouse(house)">Edit</button>
-        <span class="delete-button" @click.stop="confirmDelete(house)">✖</span>
+        <span class="delete-button" @click.stop="confirmDelete(house)">Delete</span>
       </li>
     </ul>
   </div>
@@ -19,7 +19,7 @@
 <!-- House Modal -->
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
   houses: {

@@ -42,7 +42,7 @@
 import { ref, watch, onBeforeUnmount, reactive } from "vue";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { defineProps, defineEmits } from "vue";
+
 
 const props = defineProps({
   houseName: {
@@ -70,8 +70,8 @@ const formData = reactive({
   houseName: "",
   address: "",
   gateCode: "",
-  contactNumber: "",
-  calEventColor: "#36b5f4",
+  contactnumber: "",
+  calEventColor: "",
 });
 
 const errorMessage = ref("");

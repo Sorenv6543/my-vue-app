@@ -1,0 +1,12 @@
+{
+    "easycode.usePromptAssistant": false,
+    "easycode.dataCollection": false,
+    "bitoAI.codeCompletion.enableAutoCompletion": true,
+    "bitoAI.codeCompletion.enableCommentToCode": true,
+    "bitoAI.codeCompletion.setAutoCompletionTriggerLogic": 150,
+    "javascript.suggest.paths": false,
+    "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+    "vscode-edge-devtools.headless": false,
+    "Codegeex.SidebarUI.LanguagePreference": "English",
+    "CodeGPT.apiKey": "CodeGPT Plus Beta"
+}
