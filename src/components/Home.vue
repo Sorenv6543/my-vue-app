@@ -16,6 +16,10 @@
         :user="userData"
         :user-id="userData.id"
         :is-submitting="isSubmitting"
+<<<<<<< Updated upstream
+=======
+      
+>>>>>>> Stashed changes
         :error-message="errorMessage"
       />
       <!-- @openModal="openHouseModal" AddHouseButton -->
@@ -28,6 +32,7 @@
         :is-visible="isEditModalVisible"
         @closeModal="closeEditModal"
         @houseUpdated="handleHouseUpdated"
+<<<<<<< Updated upstream
       />
       <HouseList
         :houses="userData.houses"
@@ -40,6 +45,21 @@
       <FullCalendar :user-id="userData.id" :active-house="activeHouse" />
     </template>
     <p><router-link to="/Primevue">PrimeView Examples</router-link></p>
+=======
+      />
+
+      <HouseList
+        :houses="userData.houses"
+        :activeHouse="activeHouse"
+        @setActiveHouse="setActiveHouse"
+        @deleteHouse="deleteHouseHandler"
+        @editHouse="openEditModal"
+      />
+
+      <FullCalendar :user-id="userData.id" :active-house="activeHouse" />
+    </template>
+
+>>>>>>> Stashed changes
     <!-- Error Display -->
     <p v-if="error" class="error">{{ error }}</p>
   </div>

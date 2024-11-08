@@ -1,8 +1,6 @@
 <template>
-  <div >
+  <div>
     <button @click="showModal = true">Add House</button>
-    
-    <!-- House Modal -->
     <HouseModal
       v-if="showModal"
       :user="user"
@@ -15,13 +13,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import HouseModal from './HouseModal.vue';
+import { ref } from "vue";
+import HouseModal from "./HouseModal.vue";
 
 const props = defineProps({
   user: {
     type: Object,
-    required: true
+    required: true,
   },
   userId: {
     type: String,
@@ -38,12 +36,12 @@ const handleHouseAdded = (newHouse) => {
 </script>
 
 <style scoped>
-button{
+button {
   margin-top: 10px;
   padding: 5px 10px;
   background-color: #36b5f4;
   color: white;
-  border-width: .3rem;
+  border-width: 0.3rem;
   border-color: rgb(220, 223, 222);
   border-radius: 10px;
   cursor: pointer;

@@ -53,10 +53,10 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { INITIAL_EVENTS, createEventId } from './event-utils';
+import { createEventId } from './event-utils';
+import { auth } from "../auth";
 import { db } from '../firebaseConfig';
 import { collection, addDoc, deleteDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
-import { auth } from "../auth";
 
 const props = defineProps({
   userId: {
@@ -77,7 +77,7 @@ const calendarOptions = {
     right: 'dayGridMonth,timeGridWeek,timeGridDay',
   },
   initialView: 'dayGridMonth',
-  initialEvents: INITIAL_EVENTS,
+  initialEvents: '',
   editable: true,
   selectable: true,
   selectMirror: true,
@@ -130,8 +130,8 @@ const updateEvent = async () => {
     const calendarApi = calendarOptions.plugins[0].calendar;
     const event = calendarApi.getEventById(selectedEventId.value);
     if (event) {
-      event.setStart(updatedEvent.start);
-      event.setEnd(updatedEvent.end);
+      event.setEventStart(updatedEvent.start);
+      event.setEventEnd(updatedEvent.end);
       event.setExtendedProp('notes', updatedEvent.notes);
     }
 

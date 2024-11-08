@@ -4,20 +4,22 @@
     <ul>
       <li
         v-for="house in houses"
-        :key="house.name" 
-        :class="{ active: house === selectedHouse }" 
+        :key="house.name"
+        :class="{ active: house === selectedHouse }"
         @click="selectHouse(house)"
       >
         <span class="house-name">{{ house.name }}</span>
-      <button class="edit-button" @click.stop="editHouse(house)">Edit</button>
-         <span class="delete-button" @click.stop="confirmDelete(house)">✖</span>
+        <button class="edit-button" @click.stop="editHouse(house)">Edit</button>
+        <span class="delete-button" @click.stop="confirmDelete(house)">✖</span>
       </li>
     </ul>
   </div>
 </template>
 
+<!-- House Modal -->
+
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue';
+import { defineProps, defineEmits, ref, watch } from "vue";
 
 const props = defineProps({
   houses: {
@@ -30,23 +32,23 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['setActiveHouse', 'deleteHouse', 'editHouse']);
+const emit = defineEmits(["setActiveHouse", "deleteHouse", "editHouse"]);
 
 const selectedHouse = ref(props.activeHouse);
 
 const selectHouse = (house) => {
   selectedHouse.value = house;
-  emit('setActiveHouse', house);
+  emit("setActiveHouse", house);
 };
 
 const confirmDelete = (house) => {
   if (confirm(`Are you sure you want to delete ${house.name}?`)) {
-    emit('deleteHouse', house);
+    emit("deleteHouse", house);
   }
 };
 
 const editHouse = (house) => {
-  emit('editHouse', house);
+  emit("editHouse", house);
 };
 
 watch(
@@ -67,14 +69,14 @@ watch(
 .house-list li {
   padding: 10px;
   cursor: pointer;
-  border: 1px solid #ddd;
+  border: 1px solid #7e3939;
   margin-bottom: 5px;
   transition: background-color 0.3s;
 }
 
 .house-list li.active {
   background-color: #36b5f4;
-  color: white;
+  color: rgb(100, 29, 29);
 }
 
 .delete-button {
