@@ -1,6 +1,7 @@
-import { normalizeLineEndings as orgNormalizeLineEndings } from 'internal-utils';
-import { promises as fs } from 'fs';
-import { join } from 'path';
+
+import fs from 'fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, createWriteStream } from 'fs';
+import { basename, join, extname } from 'path';
 import { parse } from '@vue/compiler-sfc';
 
 // Pre-compile regex patterns
