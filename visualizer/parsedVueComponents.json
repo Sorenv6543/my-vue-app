@@ -1,160 +1,50 @@
 [
   {
-    "filePath": "src/components/AddHouseButton.vue",
-    "components": {
-      "template": "\n  <div>\n    <button @click=\"showModal = true\">Add House</button>\n    <HouseModal\n      v-if=\"showModal\"\n      :user=\"user\"\n      :userId=\"userId\"\n      :is-visible=\"showModal\"\n      @closeModal=\"showModal = false\"\n      @houseAdded=\"handleHouseAdded\"\n    />\n  </div>\n",
-      "script": "\nimport { ref } from \"vue\";\nimport HouseModal from \"./HouseModal.vue\";\n\nconst props = defineProps({\n  user: {\n    type: Object,\n    required: true,\n  },\n  userId: {\n    type: String,\n    required: true,\n  },\n});\n\nconst showModal = ref(false);\n\nconst handleHouseAdded = (newHouse) => {\n  console.log(\"New house added:\", newHouse);\n  // Optionally refresh the house list or show success feedback\n};\n",
-      "composition": {
-        "props": "{\n  user: {\n    type: Object,\n    required: true,\n  },\n  userId: {\n    type: String,\n    required: true,\n  },\n}",
-        "emits": "",
-        "computed": [],
-        "watchers": [],
-        "state": {
-          "reactive": [],
-          "refs": ["showModal"]
-        },
-        "methods": []
-      }
-    }
+    "name": "AddHouseButton",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/FullCalendar.vue",
-    "components": {
-      "template": "\n  <div class=\"demo-app\">\n    <div class=\"demo-app-main\">\n      <FullCalendar class=\"demo-app-calendar\" :options=\"calendarOptions\">\n        <template v-slot:eventContent=\"arg\">\n          <b>{{ arg.timeText }}</b>\n          <i>{{ arg.event.title }}</i>\n        </template>\n      </FullCalendar>\n\n           <!-- Event Edit Modal -->\n           <div v-if=\"isEventModalVisible\" class=\"modal-overlay\">\n        <div class=\"modal-content\">\n          <h4>Edit Event</h4>\n          <form @submit.prevent=\"updateEvent\">\n            <label>\n              Start Date:\n              <input type=\"date\" v-model=\"eventStartDate\" required />\n            </label>\n            <label>\n              Start Time:\n              <input type=\"time\" v-model=\"eventStartTime\"  />\n            </label>\n            <label>\n              End Date:\n              <input type=\"date\" v-model=\"eventEndDate\" required />\n            </label>\n            <label>\n              End Time:\n              <input type=\"time\" v-model=\"eventEndTime\"  />\n            </label>\n            <label>\n              Event Notes:\n              <textarea v-model=\"eventNotes\"></textarea>\n            </label>\n\n            <div class=\"modal-actions\">\n              <button type=\"button\" @click=\"closeEventModal\">Cancel</button>\n              <button type=\"submit\">Save Changes</button>\n              <button type=\"button\" @click=\"deleteEvent\" class=\"delete-button\">Delete</button>\n            </div>\n          </form>\n        </div>\n      </div>\n\n    </div>\n  </div>\n",
-      "script": "\nimport { onBeforeUnmount,ref } from 'vue';\nimport FullCalendar from '@fullcalendar/vue3';\nimport dayGridPlugin from '@fullcalendar/daygrid';\nimport timeGridPlugin from '@fullcalendar/timegrid';\nimport interactionPlugin from '@fullcalendar/interaction';\nimport { createEventId } from './event-utils';\nimport { auth } from \"../auth\";\nimport { db } from '../firebaseConfig';\nimport { collection, addDoc, deleteDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';\n\nconst props = defineProps({\n  userId: {\n    type: String,\n    required: true,\n  },\n  activeHouse: {\n    type: Object,\n    default: () => ({}),\n  },\n});\n\nconst calendarOptions = {\n  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],\n  headerToolbar: {\n    left: 'prev,next today',\n    center: 'title',\n    right: 'dayGridMonth,timeGridWeek,timeGridDay',\n  },\n  initialView: 'dayGridMonth',\n  initialEvents: '',\n  editable: true,\n  selectable: true,\n  selectMirror: true,\n  dayMaxEvents: true,\n  weekends: true,\n  select: handleDateSelect, \n  eventClick: handleEventClick, \n  eventsSet: handleEvents, \n  events: fetchEvents, \n};\n\n// Modal state and event details\nconst isEventModalVisible = ref(false);\nconst selectedEventId = ref(null);\nconst eventStartDate = ref('');\nconst eventStartTime = ref('');\nconst eventEndDate = ref('');\nconst eventEndTime = ref('');\nconst eventNotes = ref('');\n\n// Event click handler to open modal with event details\nfunction handleEventClick(clickInfo) {\n  isEventModalVisible.value = true;\n  selectedEventId.value = clickInfo.event.id;\n  eventStartDate.value = clickInfo.event.startStr.split('T')[0];\n  eventStartTime.value = clickInfo.event.startStr.split('T')[1]?.slice(0, 5) || '';\n  eventEndDate.value = clickInfo.event.endStr?.split('T')[0] || eventStartDate.value;\n  eventEndTime.value = clickInfo.event.endStr?.split('T')[1]?.slice(0, 5) || eventStartTime.value;\n  eventNotes.value = clickInfo.event.extendedProps.notes || '';\n}\n\nconst closeEventModal = () => {\n  isEventModalVisible.value = false;\n};\n\n// Update event in Firebase and FullCalendar\nconst updateEvent = async () => {\n  try {\n    const updatedEvent = {\n      start: `${eventStartDate.value}T${eventStartTime.value}:00`,\n      end: `${eventEndDate.value}T${eventEndTime.value}:00`,\n      notes: eventNotes.value,\n    };\n\n    // Update in Firebase\n    const eventRef = doc(db, 'events', selectedEventId.value);\n    await updateDoc(eventRef, updatedEvent);\n\n    // Update in FullCalendar\n    const calendarApi = calendarOptions.plugins[0].calendar;\n    const event = calendarApi.getEventById(selectedEventId.value);\n    if (event) {\n      event.setEventStart(updatedEvent.start);\n      event.setEventEnd(updatedEvent.end);\n      event.setExtendedProp('notes', updatedEvent.notes);\n    }\n\n    closeEventModal();\n  } catch (error) {\n    console.error('Error updating event:', error);\n  }\n};\nasync function fetchEvents(fetchInfo, successCallback, failureCallback) {\n  try {\n    const currentUser = auth.currentUser.uid;\n    if (!currentUser) {\n      console.error('No user logged in');\n      return;\n    }\n\n    const eventsRef = collection(db, 'events');\n    const q = query(eventsRef, where('userId', '==', auth.currentUser.uid));\n    const querySnapshot = await getDocs(q);\n\n    const events = querySnapshot.docs.map(doc => ({\n      id: doc.id,\n      ...doc.data(),\n    }));\n\n    successCallback(events);\n  } catch (error) {\n    console.error('Error fetching events:', error);\n    failureCallback(error);\n  }\n}\n\nasync function handleDateSelect(selectInfo) {\n  const title = props.activeHouse.name ; // Use active house as the title\n  let calendarApi = selectInfo.view.calendar;\n  calendarApi.unselect();\n  \n  if (title && typeof title === 'string' && title.trim() !== '') {\n    const newEvent = {\n      id: createEventId(),\n      title: title.trim(),\n      start: selectInfo.startStr,\n      end: selectInfo.endStr,\n      allDay: selectInfo.allDay,\n      userId: auth.currentUser.uid,\n      houseDetails: { ...props.activeHouse }, // Include all properties of activeHouse\n      backgroundColor: props.activeHouse.calEventColor || '#36b5f4', // Default color if calEventColor is not set\n      borderColor: props.activeHouse.calEventColor || '#36b5f4'      // Set border color to match\n    };\n    try {\n      const docRef = await addDoc(collection(db, 'events'), newEvent);\n      await updateDoc(doc(db, 'events', docRef.id), { id: docRef.id });\n      calendarApi.addEvent(newEvent);\n    } catch (error) {\n      console.error('Error adding event:', error);\n    }\n  }\n}\n\nconst deleteEvent = async () => {\n  if (confirm(\"Are you sure you want to delete this event?\")) {\n    try {\n      // Delete from Firebase\n      const eventRef = doc(db, 'events', selectedEventId.value);\n      await deleteDoc(eventRef);\n\n      // Remove from FullCalendar\n      const calendarApi = calendarRef.value.getApi();\n      const event = calendarApi.getEventById(selectedEventId.value);\n      if (event) {\n        event.remove();\n      }\n\n      closeEventModal();\n    } catch (error) {\n      console.error('Error deleting event:', error);\n    }\n  }\n};\n// async function handleEventClick(clickInfo) {\n//   if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'?`)) {\n//     try {\n//       await deleteDoc(doc(db, 'events', clickInfo.event.id));\n//       clickInfo.event.remove();\n//     } catch (error) {\n//       console.error('Error deleting event:', error);\n//     }\n//   }\n// }\n\nfunction handleEvents(events) {\n  // You could manage current events here if needed\n}\n\nonBeforeUnmount(() => {\n  // Clean up any Firestore listeners if you have any\n});\n\n",
-      "composition": {
-        "props": "{\n  userId: {\n    type: String,\n    required: true,\n  },\n  activeHouse: {\n    type: Object,\n    default: (",
-        "emits": "",
-        "computed": [],
-        "watchers": [],
-        "state": {
-          "reactive": [],
-          "refs": [
-            "isEventModalVisible",
-            "selectedEventId",
-            "eventStartDate",
-            "eventStartTime",
-            "eventEndDate",
-            "eventEndTime",
-            "eventNotes"
-          ]
-        },
-        "methods": [
-          "handleEventClick",
-          "fetchEvents",
-          "handleDateSelect",
-          "handleEventClick",
-          "handleEvents"
-        ]
-      }
-    }
+    "name": "FullCalendar",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/Home.vue",
-    "components": {
-      "template": "\n  <div>\n    <!-- Show login message if user is not logged in -->\n    <p v-if=\"!userData\">Please log in to see your dashboard.</p>\n\n    <!-- User dashboard content -->\n    <template v-if=\"userData\">\n      <UserDashboard\n        :user=\"userData\"\n        :is-loading=\"isLoading\"\n        :error=\"error\"\n        @logout=\"logout\"\n      />\n\n      <AddHouseButton\n        :user=\"userData\"\n        :user-id=\"userData.id\"\n        :is-submitting=\"isSubmitting\"     \n      />\n      \n      <HouseModal\n        v-if=\"isEditModalVisible\"\n        :house=\"selectedHouse\"\n        :user=\"userData\"\n        :user-id=\"userData.id\"\n        :is-edit=\"true\"\n        :is-visible=\"isEditModalVisible\"\n        @closeModal=\"closeEditModal\"\n        @houseUpdated=\"handleHouseUpdated\"\n      />\n     \n      <FullCalendar :user-id=\"userData.id\" :active-house=\"activeHouse\" />\n    \n       \n<!-- Home component passing\n     house data: activehouse \n     state, and handling house\n     event handlers -->\n\n\n      <!-- Error Display -->\n      <HouseList\n        :houses=\"userData.houses\"\n        :activeHouse=\"activeHouse\"\n        @setActiveHouse=\"setActiveHouse\"\n        @deleteHouse=\"deleteHouseHandler\"\n        @editHouse=\"openEditModal\"\n      />\n\n    </template>\n    <!-- Error Display -->\n    <p v-if=\"error\" class=\"error\">{{ error }}</p>\n  </div>\n",
-      "script": "\nimport { useRouter } from \"vue-router\";\nimport { onMounted, onUnmounted, reactive, toRefs, ref } from \"vue\";\nimport { onAuthStateChangedListener, logoutUser } from \"../auth\";\nimport { fetchUserData, deleteHouse } from \"./user-utils\";\nimport FullCalendar from \"./FullCalendar.vue\";\nimport AddHouseButton from \"./AddHouseButton.vue\";\nimport HouseList from \"./HouseList.vue\";\nimport UserDashboard from \"./UserDashboard.vue\";\nimport HouseModal from \"./HouseModal.vue\";\n\nconst router = useRouter();\n\n// Reactive state\nconst state = reactive({\n  userData: null,\n  isLoading: true,\n  error: null,\n  isSubmitting: false,\n  errorMessage: \"\",\n  activeHouse: {},\n});\n\n// Destructure state for easier access\nconst { userData, isLoading, error, isSubmitting, errorMessage, activeHouse } = toRefs(\n  state\n);\n\n// Refs for modal control\nconst isEditModalVisible = ref(false);\nconst selectedHouse = ref({});\n\n// Modal control functions\nconst openEditModal = (house) => {\n  selectedHouse.value = { ...house };\n  isEditModalVisible.value = true;\n};\n\nconst closeEditModal = () => {\n  isEditModalVisible.value = false;\n  selectedHouse.value = {};\n};\n\n// House management functions\nconst handleHouseUpdated = (updatedHouse) => {\n  const houseIndex = state.userData.houses.findIndex(\n    (h) => h.houseId === updatedHouse.houseId\n  );\n  if (houseIndex !== -1) {\n    state.userData.houses[houseIndex] = updatedHouse;\n  }\n};\n\nconst setActiveHouse = (house) => {\n  if (typeof house === \"object\") {\n    state.activeHouse = house;\n  } else {\n    console.warn(\"Expected an object for activeHouse, received:\", house);\n  }\n};\n\nconst deleteHouseHandler = async (house) => {\n  await deleteHouse(house, state.userData, state);\n};\n\n// User data management\nconst fetchUserDataHandler = async (currentUser) => {\n  state.unsubscribeUser = fetchUserData(currentUser, state);\n};\n\n// Authentication functions\nconst logout = async () => {\n  try {\n    await logoutUser();\n    state.userData = null;\n    router.push(\"/login\");\n  } catch (err) {\n    state.error = \"Failed to logout. Please try again.\";\n  }\n};\n\n// Lifecycle hooks\nonMounted(() => {\n  state.unsubscribeAuth = onAuthStateChangedListener(async (currentUser) => {\n    state.isLoading = true;\n    state.error = null;\n    if (currentUser) {\n      await fetchUserDataHandler(currentUser);\n    } else {\n      state.userData = null;\n      state.isLoading = false;\n    }\n  });\n});\n\nonUnmounted(() => {\n  if (state.unsubscribeAuth) state.unsubscribeAuth();\n  if (state.unsubscribeUser) state.unsubscribeUser();\n});\n",
-      "composition": {
-        "props": "",
-        "emits": "",
-        "computed": [],
-        "watchers": [],
-        "state": {
-          "reactive": ["state"],
-          "refs": ["isEditModalVisible", "selectedHouse"]
-        },
-        "methods": []
-      }
-    }
+    "name": "Home",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/HouseList.vue",
-    "components": {
-      "template": "\n  <div class=\"house-list\">\n    <h4>Your Houses</h4>\n    <ul>\n      <li\n        v-for=\"house in houses\"\n        :key=\"house.name\"\n        :class=\"{ active: house === selectedHouse }\"\n        @click=\"selectHouse(house)\"\n      >\n        <span class=\"house-name\">{{ house.name }}</span>\n        <button class=\"edit-button\" @click.stop=\"editHouse(house)\">Edit</button>\n        <span class=\"delete-button\" @click.stop=\"confirmDelete(house)\">Delete</span>\n      </li>\n    </ul>\n  </div>\n",
-      "script": "\nimport { ref, watch } from \"vue\";\n\nconst props = defineProps({\n  houses: {\n    type: Array,\n    required: true,\n  },\n  activeHouse: {\n    type: Object,\n    default: null,\n  },\n});\n\nconst emit = defineEmits([\"setActiveHouse\", \"deleteHouse\", \"editHouse\"]);\n\nconst selectedHouse = ref(props.activeHouse);\n\nconst selectHouse = (house) => {\n  selectedHouse.value = house;\n  emit(\"setActiveHouse\", house);\n};\n\nconst confirmDelete = (house) => {\n  if (confirm(`Are you sure you want to delete ${house.name}?`)) {\n    emit(\"deleteHouse\", house);\n  }\n};\n\nconst editHouse = (house) => {\n  emit(\"editHouse\", house);\n};\n\nwatch(\n  () => props.activeHouse,\n  (newActiveHouse) => {\n    selectedHouse.value = newActiveHouse;\n  },\n  { immediate: true }\n);\n",
-      "composition": {
-        "props": "{\n  houses: {\n    type: Array,\n    required: true,\n  },\n  activeHouse: {\n    type: Object,\n    default: null,\n  },\n}",
-        "emits": "[\"setActiveHouse\", \"deleteHouse\", \"editHouse\"]",
-        "computed": [],
-        "watchers": ["\n  ("],
-        "state": {
-          "reactive": [],
-          "refs": ["selectedHouse"]
-        },
-        "methods": []
-      }
-    }
+    "name": "HouseList",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/HouseModal.vue",
-    "components": {
-      "template": "\n  <div class=\"modal-overlay\" v-if=\"props.isVisible\">\n    <div class=\"modal-content\">\n      <h4>Add New House</h4>\n      <form @submit.prevent=\"createHouse\">\n        <label>\n          House Name:\n          <input type=\"text\" v-model.trim=\"formData.houseName\" required />\n        </label>\n\n        <label>\n          Address:\n          <input type=\"text\" v-model.trim=\"formData.address\" required />\n        </label>\n\n        <label>\n          Gate Code / Door Codes\n          <input type=\"text\" v-model.trim=\"formData.gateCode\" />\n        </label>\n\n        <label>\n          Contact Number:\n          <input type=\"tel\" v-model.trim=\"formData.contactNumber\" />\n        </label>\n\n        <label>\n          Calendar Event Color:\n          <input type=\"color\" v-model=\"formData.calEventColor\" />\n        </label>\n\n        <div class=\"modal-actions\">\n          <button type=\"button\" @click=\"cancel\">Cancel</button>\n          <button type=\"submit\" :disabled=\"isSubmitting\">Create</button>\n        </div>\n        <p v-if=\"errorMessage\" class=\"error\">{{ errorMessage }}</p>\n      </form>\n    </div>\n  </div>\n",
-      "script": "\nimport { ref, watch, onBeforeUnmount, reactive } from \"vue\";\nimport { doc, updateDoc, arrayUnion } from \"firebase/firestore\";\nimport { db } from \"../firebaseConfig\";\n\n\nconst props = defineProps({\n  houseName: {\n    type: String,\n    default: \"\",\n  },\n  address: {\n    type: String,\n    default: \"\",\n  },\n  user: {\n    type: Object,\n    required: true,\n  },\n  isVisible: {\n    type: Boolean,\n    required: true,\n  },\n});\n\nconst emit = defineEmits([\"closeModal\", \"houseAdded\"]);\n\n// Form states using reactive for better performance\nconst formData = reactive({\n  houseName: \"\",\n  address: \"\",\n  gateCode: \"\",\n  contactnumber: \"\",\n  calEventColor: \"\",\n});\n\nconst errorMessage = ref(\"\");\nconst isSubmitting = ref(false);\n\n// Optimized watch with cleanup\nconst unwatch = watch(\n  () => props.isVisible,\n  (newVal) => {\n    if (newVal) resetForm();\n  }\n);\n\n// Cleanup on component unmount\nonBeforeUnmount(() => {\n  unwatch();\n});\n\nconst resetForm = () => {\n  Object.assign(formData, {\n    houseName: \"\",\n    address: \"\",\n    gateCode: \"\",\n    contactNumber: \"\",\n    calEventColor: \"#36b5f4\",\n  });\n  errorMessage.value = \"\";\n};\n\nconst createHouse = async () => {\n  if (!formData.houseName) {\n    errorMessage.value = \"House name is required\";\n    return;\n  }\n\n  isSubmitting.value = true;\n  errorMessage.value = \"\";\n\n  const newHouse = {\n    housename: formData.houseName,\n    address: formData.address,\n    doorandgatecodes: formData.gateCode,\n    contactnumber: formData.contactNumber,\n    caleventcolor: formData.calEventColor,\n    userfullname: props.user.fullName || \"Unknown User\",\n  };\n\n  try {\n    await updateDoc(doc(db, \"users\", props.user.id), {\n      houses: arrayUnion(newHouse),\n    });\n    emit(\"houseAdded\", newHouse);\n    close();\n  } catch (error) {\n    console.error(\"Error adding house:\", error);\n    errorMessage.value = \"Failed to add house. Please try again.\";\n  } finally {\n    isSubmitting.value = false;\n  }\n};\n\nconst cancel = () => {\n  close();\n};\n\nconst close = () => {\n  emit(\"closeModal\");\n  resetForm();\n};\n",
-      "composition": {
-        "props": "{\n  houseName: {\n    type: String,\n    default: \"\",\n  },\n  address: {\n    type: String,\n    default: \"\",\n  },\n  user: {\n    type: Object,\n    required: true,\n  },\n  isVisible: {\n    type: Boolean,\n    required: true,\n  },\n}",
-        "emits": "[\"closeModal\", \"houseAdded\"]",
-        "computed": [],
-        "watchers": ["\n  ("],
-        "state": {
-          "reactive": ["formData"],
-          "refs": ["errorMessage", "isSubmitting"]
-        },
-        "methods": []
-      }
-    }
+    "name": "HouseModal",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/Login.vue",
-    "components": {
-      "template": "\n  <div id=\"reg\">\n    <h1>Login</h1>\n    <form id=\"col\" @submit.prevent=\"login\">\n      <input v-model=\"email\" type=\"email\" placeholder=\"Email\" required />\n      <input v-model=\"password\" type=\"password\" placeholder=\"Password\" required />\n      <button type=\"submit\">Login</button>\n      <p v-if=\"error\">{{ error }}</p>\n    </form>\n    \n    <p>Or Register <router-link to=\"/register\">Here </router-link></p>\n  </div>\n  \n  \n",
-      "script": "\nimport { ref } from 'vue';\nimport { loginUser } from '../auth';  // Adjust the path as necessary\nimport { useRouter } from 'vue-router';\nconst router = useRouter();\nconst email = ref('');\nconst password = ref('');\nconst error = ref('');\n\n\nconst login = async () => {\n  try {\n    await loginUser(email.value, password.value);\n    router.push('/home');  // Redirect to dashboard\n  } catch (err) {\n    error.value = err.message;\n  }\n};\n",
-      "composition": {
-        "props": "",
-        "emits": "",
-        "computed": [],
-        "watchers": [],
-        "state": {
-          "reactive": [],
-          "refs": ["email", "password", "error"]
-        },
-        "methods": []
-      }
-    }
+    "name": "Login",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/Register.vue",
-    "components": {
-      "template": "\n  <div class=\"register-container\">\n    <h1>Register</h1>\n    <form class=\"register-form\" @submit.prevent=\"handleRegister\">\n      <div class=\"form-group\">\n        <label for=\"email\">Email</label>\n        <input\n          id=\"email\"\n          v-model=\"form.email\"\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          :disabled=\"isLoading\"\n          aria-required=\"true\"\n        />\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"password\">Password</label>\n        <input\n          id=\"password\"\n          v-model=\"form.password\"\n          type=\"password\"\n          placeholder=\"Enter your password\"\n          :disabled=\"isLoading\"\n          aria-required=\"true\"\n          minlength=\"8\"\n        />\n      </div>\n\n      <div class=\"form-group\">\n        <label for=\"fullName\">Full Name</label>\n        <input\n          id=\"fullName\"\n          v-model=\"form.fullName\"\n          type=\"text\"\n          placeholder=\"Enter your full name\"\n          :disabled=\"isLoading\"\n          aria-required=\"true\"\n        />\n      </div>\n\n      <button \n        type=\"submit\" \n        :disabled=\"isLoading || !isFormValid\"\n      >\n        {{ isLoading ? 'Registering...' : 'Register' }}\n      </button>\n\n      <p>Or Login <router-link to=\"/login\">Here</router-link></p>\n      <p v-if=\"error\" class=\"error-message\">{{ error }}</p>\n    </form>\n  </div>\n",
-      "script": "\nimport { db } from '../firebaseConfig';\nimport { doc, setDoc } from 'firebase/firestore';\nimport { ref, computed } from 'vue';\nimport { registerUser } from '../auth';\nimport { useRouter } from 'vue-router';\n\nconst router = useRouter();\nconst isLoading = ref(false);\nconst error = ref('');\n\nconst form = ref({\n  email: '',\n  password: '',\n  fullName: ''\n});\n\nconst isFormValid = computed(() => {\n  return form.value.email && \n         form.value.password && \n         form.value.password.length >= 8 && \n         form.value.fullName;\n});\n\nconst resetForm = () => {\n  form.value = {\n    email: '',\n    password: '',\n    fullName: ''\n  };\n  error.value = '';\n};\n\nconst handleRegister = async () => {\n  if (!isFormValid.value) return;\n  \n  isLoading.value = true;\n  error.value = '';\n\n  try {\n    const userCredential = await registerUser(form.value.email, form.value.password);\n    const userId = userCredential.user.uid;\n\n    await setDoc(doc(db, 'users', userId), {\n      fullName: form.value.fullName,\n      email: form.value.email,\n      houses: [],\n      id: userId\n    });\n\n    resetForm();\n    router.push('/home');\n  } catch (err) {\n    error.value = err.message || 'Registration failed. Please try again.';\n  } finally {\n    isLoading.value = false;\n  }\n};\n",
-      "composition": {
-        "props": "",
-        "emits": "",
-        "computed": ["("],
-        "watchers": [],
-        "state": {
-          "reactive": [],
-          "refs": ["isLoading", "error", "form"]
-        },
-        "methods": []
-      }
-    }
+    "name": "Register",
+    "props": [],
+    "methods": [],
+    "imports": []
   },
   {
-    "filePath": "src/components/UserDashboard.vue",
-    "components": {
-      "template": "\n<div class=\"user-info\">\n    \n    <p><strong>Houses:</strong> {{ user.houses.length }}</p>\n    <p id='username'><strong> {{ user.fullName }}</strong> Logged In</p>\n    <button @click=\"logout\">Logout</button>\n  </div>\n",
-      "script": "\n\nconst props = defineProps({\n  user: {\n    type: Object,\n    required: true\n  }\n});\n\nconst emit = defineEmits(['logout']);\n\nconst logout = () => {\n  emit('logout');\n};\n",
-      "composition": {
-        "props": "{\n  user: {\n    type: Object,\n    required: true\n  }\n}",
-        "emits": "['logout']",
-        "computed": [],
-        "watchers": [],
-        "state": {
-          "reactive": [],
-          "refs": []
-        },
-        "methods": []
-      }
-    }
+    "name": "UserDashboard",
+    "props": [],
+    "methods": [],
+    "imports": []
   }
 ]

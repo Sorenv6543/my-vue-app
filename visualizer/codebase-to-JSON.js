@@ -1,7 +1,7 @@
-import { normalizeLineEndings as orgNormalizeLineEndings } from 'internal-utils';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { parse } from '@vue/compiler-sfc';
+import { fs } from 'fs';
 
 // Pre-compile regex patterns
 const PATTERNS = {
@@ -14,19 +14,8 @@ const PATTERNS = {
     methods: /function\s+(\w+)/g
 };
 
-/**
- * Converts Windows-style line endings to Unix-style.
- * 
- * @param {string} content - The string content to normalize.
- * @returns {string} - The content with normalized line endings.
- * 
- * Note: This function assumes the input is a string and only replaces '\r\n' with '\n'.
- */
-function convertToUnixLineEndings(content) {
-    if (typeof content !== 'string') {
-        throw new TypeError('Expected a string as input');
-    }
-    return orgNormalizeLineEndings(content);
+function normalizeLineEndings(content) {
+    return content.replace(/\r\n/g, '\n');
 }
 
 function extractMatches(content, pattern, isGlobal = false) {
@@ -38,7 +27,7 @@ function extractMatches(content, pattern, isGlobal = false) {
 }
   async function parseVueFile(filePath) {
       try {
-          const content = normalizeLineEndings(await fs.readFile(filePath, 'utf8'));
+          const content = normalizeLineEndings(await fs.readFile('../src/components/HouseList.vue', 'utf8'));
           const parsed = parse(content);
           const scriptContent = normalizeLineEndings(
               parsed.descriptor.scriptSetup?.content || 
@@ -70,7 +59,6 @@ function extractMatches(content, pattern, isGlobal = false) {
           return null;
       }
   }
-
 async function* walkDirectory(dir) {
     const files = await fs.readdir(dir);
     for (const file of files) {
@@ -82,7 +70,6 @@ async function* walkDirectory(dir) {
             yield filePath;
         }
     }
-
 }
 async function parseAllVueFiles(dir) {
     const results = [];
@@ -94,6 +81,7 @@ async function parseAllVueFiles(dir) {
     } catch (error) {
         console.error(`Error processing directory ${dir}:`, error);
     }
+
     return results;
 }
 
@@ -101,14 +89,14 @@ async function main() {
     try {
         const rootDir = '../src/components/';
         const allParsedFiles = await parseAllVueFiles(rootDir);
-        await fs.writeFile(
+         fs.writeFile(
             'parsedVueComponents.json', 
             JSON.stringify(allParsedFiles, null, 2)
         );
-        console.log("Parsed data saved to parsedVueComponents.json");
+        console.log("Generated parsedVueComponents.json");
     } catch (error) {
         console.error("Failed to process Vue files:", error);
     }
-}
+};
 
 main();

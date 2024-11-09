@@ -1,23 +1,30 @@
 <template>
-  <div>
+  <>
     <!-- Show login message if user is not logged in -->
     <p v-if="!userData">Please log in to see your dashboard.</p>
 
     <!-- User dashboard content -->
     <template v-if="userData">
       <UserDashboard
-        :user="userData"
-        :is-loading="isLoading"
-        :error="error"
-        @logout="logout"
-      />
-
-      <AddHouseButton
-        :user="userData"
-        :user-id="userData.id"
-        :is-submitting="isSubmitting"     
+      :user="userData"
+      :is-loading="isLoading"
+      :error="error"
+      @logout="logout"
       />
       
+      <AddHouseButton
+      :user="userData"
+      :user-id="userData.id"
+      :is-submitting="isSubmitting"     
+      />
+      
+      <HouseList
+        :houses="userData.houses"
+        :activeHouse="activeHouse"
+        @setActiveHouse="setActiveHouse"
+        @deleteHouse="deleteHouseHandler"
+        @editHouse="openEditModal"
+      />
       <HouseModal
         v-if="isEditModalVisible"
         :house="selectedHouse"
@@ -30,27 +37,10 @@
       />
      
       <FullCalendar :user-id="userData.id" :active-house="activeHouse" />
-    
-       
-<!-- Home component passing
-     house data: activehouse 
-     state, and handling house
-     event handlers -->
-
-
-      <!-- Error Display -->
-      <HouseList
-        :houses="userData.houses"
-        :activeHouse="activeHouse"
-        @setActiveHouse="setActiveHouse"
-        @deleteHouse="deleteHouseHandler"
-        @editHouse="openEditModal"
-      />
-
     </template>
-    <!-- Error Display -->
     <p v-if="error" class="error">{{ error }}</p>
-  </div>
+    <p>Are You ? {{ userData.fullname }}.then(  <!--style  Display None -->  <router-link id='maintence' to="/Maintence"> Maintence </router-link>
+      )</p>
 </template>
 
 <script setup>
