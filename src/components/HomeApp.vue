@@ -14,8 +14,8 @@
       
       <AddHouseButton
         :user="userData"
-        :user-id="userData.id"
-        :is-submitting="isSubmitting"     
+        :is-submitting="isSubmitting"
+        @houseAdded="handleHouseAdded"     
       />
       
       <HouseList
@@ -96,6 +96,8 @@ const closeEditModal = () => {
 };
 
 // House management functions
+
+
 const handleHouseUpdated = (updatedHouse) => {
   const houseIndex = state.userData.houses.findIndex(
     (h) => h.houseId === updatedHouse.houseId

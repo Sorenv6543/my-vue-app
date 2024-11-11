@@ -15,12 +15,12 @@
 
         <label>
           Gate Code / Door Codes
-          <input type="text" v-model.trim="formData.gateCode" />
+          <input type="text" v-model.trim="formData.doorandgatecodesgateCode" />
         </label>
 
         <label>
           Contact Number:
-          <input type="tel" v-model.trim="formData.contactNumber" />
+          <input type="tel" v-model.trim="formData.contactnumber" />
         </label>
 
         <label>
@@ -53,7 +53,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  gateCode: {
+  gatedoorcodes: {
     type: String,
     default: "",
   },
@@ -78,7 +78,7 @@ const emit = defineEmits(["closeModal", "houseAdded"]);
 const formData = reactive({
   houseName: "",
   address: "",
-  gateCode: "",
+  doorandgatecodesgateCode: "",
   contactnumber: "",
   calEventColor: "",
 });

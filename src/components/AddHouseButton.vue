@@ -7,15 +7,15 @@
  * @param {Object} user - The user object associated with the new house.
  * @param {string} userId - The ID of the user associated with the new house.
  */
+vue
 <template>
   <div>
     <button @click="showModal = true">Add House</button>
     <HouseModal
       v-if="showModal"
-      :user="user"
-      :userId="userId"
+  
       :is-visible="showModal"
-      @closeModal="showModal = false"
+      @closeModal="closeModal"
       @houseAdded="handleHouseAdded"
     />
   </div>
@@ -25,12 +25,20 @@
 import { ref } from "vue";
 import HouseModal from "./HouseModal.vue";
 
-
 const showModal = ref(false);
+const userData = ref({ houses: [] }); // Ensure userData is reactive
 
+const closeModal = () => {
+  showModal.value = false;
+};
+const emit = defineEmits(['houseAdded']);
 
+const houseAdded = () => {
+  emit('houseAdded');
+};
 
 </script>
+
 
 <style scoped>
 button {
