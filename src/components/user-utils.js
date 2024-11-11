@@ -7,29 +7,28 @@ export const fetchUserData = (currentUser, state) => {
   const userDocRef = doc(db, 'users', currentUser.uid);
 
   // Listen to real-time updates in Firestore for the user's document
-  const unsubscribeUser = onSnapshot(
-    userDocRef,
-    (doc) => {
-      if (doc.exists()) {
-        state.userData = {
-          id: auth.currentUser.uid,
-          email: doc.data().email,
-          fullName: doc.data().fullName,
-          houses: doc.data().houses || [],
-        };
-      } else {
-        state.error = 'User document does not exist';
+  return onSnapshot(
+      userDocRef,
+      (doc) => {
+        if (doc.exists()) {
+          state.userData = {
+            id: auth.currentUser.uid,
+            email: doc.data().email,
+            fullName: doc.data().fullName,
+            houses: doc.data().houses || [],
+          };
+        } else {
+          state.error = 'User document does not exist';
+        }
+        state.isLoading = false;
+      },
+      (err) => {
+        console.error("Error fetching user data: ", err);
+        state.error = 'Failed to load user data. Please try again.';
+        state.isLoading = false;
       }
-      state.isLoading = false;
-    },
-    (err) => {
-      console.error("Error fetching user data: ", err);
-      state.error = 'Failed to load user data. Please try again.';
-      state.isLoading = false;
-    }
-  );
+    ); // Return the unsubscribe function to allow cleanup in Home.vue
 
-  return unsubscribeUser; // Return the unsubscribe function to allow cleanup in Home.vue
 };
 
 // Function to delete a house
