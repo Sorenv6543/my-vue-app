@@ -1,1 +1,0 @@
-Using PlantUML with a Vue Single File Component (SFC) parser can be a great way to automate the generation of UML diagrams, especially for visualizing class and component relationships in a Vue codebase. Here’s a general guide to setting this up:
