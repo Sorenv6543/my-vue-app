@@ -8,25 +8,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "configurations": [
-    {  "command": "vite debug front",
-       "name": "Debug Front-End",
-       "type": "vite --inspect main.js",
-       "request": "launch",
-       "url": "http://chrome://inspect/#devices",
-       "webRoot": "${workspaceFolder}/src",
-       "port": 5050,
-        "preLaunchTask": "vite"
-       
-    },
-    {
-       "type": "chrome",
-       "request": "launch",
-       "name": "Launch Frontend",
-       "url": "http://localhost:3000",
-       "webRoot": "${workspaceFolder}/src"
-    }
- ],
+
      "dependencies": { 
     "@babel/parser": "^7.26.2",
     "@eslint/config-array": "^0.19.0",
@@ -41,11 +23,12 @@
     "dot": "^1.1.3",
     "dotenv": "^16.4.5",
     "env": "^0.0.2",
-    "firebase": "^10.14.1",
+    "firebase": "^11.0.1",
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.2.11",
     "markdown-it": "^14.1.0",
     "markdown-it-plantuml": "^1.4.1",
+    "node-plantuml-latest": "^2.4.0",
     "path": "^0.12.7",
     "uuid": "^11.0.2",
     "vue": "^3.5.12",

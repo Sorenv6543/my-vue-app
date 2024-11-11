@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const markdownIt = require('markdown-it');
 const markdownItPlantUML = require('markdown-it-plantuml');
 const fs = require('fs');

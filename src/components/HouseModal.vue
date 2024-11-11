@@ -53,10 +53,19 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  user: {
-    type: Object,
-    required: true,
+  gateCode: {
+    type: String,
+    default: "",
   },
+  contactNumber: {
+    type: String,
+    default: "",
+  },
+  calEventColor: {
+    type: String,
+    default: "#36b5f4",
+  },
+
   isVisible: {
     type: Boolean,
     required: true,
@@ -94,9 +103,10 @@ const resetForm = () => {
   Object.assign(formData, {
     houseName: "",
     address: "",
-    gateCode: "",
+    doorandgatecodes: "",
     contactNumber: "",
-    calEventColor: "#36b5f4",
+   caleventcolor: "",
+  
   });
   errorMessage.value = "";
 };
@@ -114,9 +124,8 @@ const createHouse = async () => {
     housename: formData.houseName,
     address: formData.address,
     doorandgatecodes: formData.gateCode,
-    contactnumber: formData.contactNumber,
+    contactnumber: formData.contactnumber,
     caleventcolor: formData.calEventColor,
-    userfullname: props.user.fullName || "Unknown User",
   };
 
   try {

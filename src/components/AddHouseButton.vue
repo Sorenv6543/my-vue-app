@@ -1,3 +1,12 @@
+/**
+ * The `AddHouseButton` component provides a button to open a modal for adding a new house.
+ * When the button is clicked, the `HouseModal` component is displayed, allowing the user to input
+ * details about the new house. When the house is added, the `handleHouseAdded` function is called
+ * to handle the new house data.
+ *
+ * @param {Object} user - The user object associated with the new house.
+ * @param {string} userId - The ID of the user associated with the new house.
+ */
 <template>
   <div>
     <button @click="showModal = true">Add House</button>
@@ -16,23 +25,11 @@
 import { ref } from "vue";
 import HouseModal from "./HouseModal.vue";
 
-const props = defineProps({
-  user: {
-    type: Object,
-    required: true,
-  },
-  userId: {
-    type: String,
-    required: true,
-  },
-});
 
 const showModal = ref(false);
 
-const handleHouseAdded = (newHouse) => {
-  console.log("New house added:", newHouse);
-  // Optionally refresh the house list or show success feedback
-};
+
+
 </script>
 
 <style scoped>
