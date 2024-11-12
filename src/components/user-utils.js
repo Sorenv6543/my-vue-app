@@ -34,7 +34,7 @@ export const fetchUserData = (currentUser, state) => {
 // Function to delete a house
 export const deleteHouse = async (house, userData, state) => {
   try {
-    if (!userData || !userData.id) return;
+    if (!userData || !userData.id) {
 
     const userDocRef = doc(db, 'users', userData.id);
 
