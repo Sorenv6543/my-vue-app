@@ -92,7 +92,7 @@ nav {
 }
 
 /* Responsive design */
-@media (max-width: 1768px) {
+@media (max-width: 1024px) {
   .nav-links {
     position: relative;
     top: 30px;
